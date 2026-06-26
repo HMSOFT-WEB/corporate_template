@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
+:root {
+  --corp-bg: #fafafa;
+  --corp-text-primary: #1e293b;
+  --corp-text-secondary: #475569;
+  --corp-accent: #2563eb;
+  --corp-accent-hover: #1d4ed8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--corp-bg);
+  color: var(--corp-text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Sections */
+.sections-container {
+  width: 100%;
+}
+
+.section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  pointer-events: none;
+}
+
+.section-content {
+  pointer-events: auto;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.right-align {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.center-align {
+  display: flex;
+  justify-content: center;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 4rem;
+  max-width: 600px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card.right {
+  text-align: left;
+}
+
+.glass-card.center {
+  text-align: center;
+  max-width: 800px;
+}
+
+/* Corporate Typography */
+.title-corporate {
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.title-secondary-corporate {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+  letter-spacing: -0.01em;
+}
+
+.subtitle-corporate {
+  font-size: clamp(1.125rem, 2vw, 1.25rem);
+  color: var(--corp-text-secondary);
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.description-corporate {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: var(--corp-text-secondary);
+  font-weight: 400;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Corporate Buttons */
+.cta-button-corporate {
+  background: var(--corp-accent);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  pointer-events: auto;
+  box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
+}
+
+.cta-button-corporate:hover {
+  background: var(--corp-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.cta-button-corporate.outline {
+  background: transparent;
+  color: var(--corp-text-primary);
+  border: 2px solid var(--corp-text-primary);
+  box-shadow: none;
+}
+
+.cta-button-corporate.outline:hover {
+  background: var(--corp-text-primary);
+  color: white;
+}
