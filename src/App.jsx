@@ -3,198 +3,278 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as random from 'maath/random/dist/maath-random.esm';
 import { motion } from 'framer-motion';
-import { Cloud, Shield, Database, Cpu, ArrowRight, ChevronRight, Globe2, Building2 } from 'lucide-react';
+import { ArrowRight, MessageSquare, Building2, ShieldCheck, Globe2, BarChart3, Users2 } from 'lucide-react';
 import './index.css';
 
-// 3D Tech Globe Background for Hero
-function TechGlobe(props) {
+// Calm, human-centric 3D particle wave (Corporate Blue on Cloud Dancer BG)
+function CorporateParticleWave() {
   const ref = useRef();
   
-  const sphere = useMemo(() => {
-    // Generate points on a sphere for a data-globe look
-    return random.inSphere(new Float32Array(4000 * 3), { radius: 2 });
-  }, []);
-
-  useFrame((state, delta) => {
-    if (ref.current) {
-      ref.current.rotation.x -= delta * 0.05;
-      ref.current.rotation.y -= delta * 0.1;
+  const count = 6000;
+  const positions = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 25;     
+      pos[i * 3 + 1] = 0;                          
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 25; 
     }
+    return pos;
+  }, [count]);
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    const positionsArray = ref.current.geometry.attributes.position.array;
+
+    for (let i = 0; i < count; i++) {
+      const x = positionsArray[i * 3];
+      const z = positionsArray[i * 3 + 2];
+      
+      // Gentle sine wave motion
+      const y = Math.sin(x * 0.4 + time * 0.3) * 0.6 + Math.cos(z * 0.4 + time * 0.2) * 0.6;
+      positionsArray[i * 3 + 1] = y - 3; 
+    }
+    
+    ref.current.geometry.attributes.position.needsUpdate = true;
+    ref.current.rotation.y = time * 0.015; 
   });
 
   return (
-    <group rotation={[0, 0, Math.PI / 6]}>
-      <Points ref={ref} positions={sphere} stride={3} frustumCulled={false} {...props}>
-        <PointMaterial
-          transparent
-          color="#0f172a" // Slate 900
-          size={0.015}
-          sizeAttenuation={true}
-          depthWrite={false}
-          opacity={0.4}
-        />
-      </Points>
-    </group>
+    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
+      <PointMaterial
+        transparent
+        color="#0f2c59" // Deep Corporate Blue particles
+        size={0.035}
+        sizeAttenuation={true}
+        depthWrite={false}
+        opacity={0.15} // Very subtle
+      />
+    </Points>
   );
 }
 
-function Navbar() {
+function Header() {
   return (
-    <nav className="navbar">
-      <div className="nav-container">
-        <div className="nav-left">
-          <div className="nav-logo">
-            <img src="/company_template1/logo.png" alt="HMSOFT" onError={(e) => e.target.style.display='none'} />
-            <span>HMSOFT</span>
-          </div>
-          <div className="nav-links">
-            <a href="#home">Platform</a>
-            <a href="#solutions">Solutions</a>
-            <a href="#company">Company</a>
-            <a href="#pricing">Pricing</a>
-          </div>
-        </div>
-        <div className="nav-actions">
-          <button className="btn-secondary">Log In</button>
-          <button className="btn-primary">Contact Sales</button>
-        </div>
+    <header className="header">
+      <div className="container header-inner container">
+        <div className="logo">HMSOFT GROUP</div>
+        <nav className="nav-links">
+          <a href="#about">Our Story</a>
+          <a href="#businesses">Capabilities</a>
+          <a href="#news">Newsroom</a>
+          <a href="#careers">Careers</a>
+        </nav>
+        <a href="#contact" className="btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>Partner With Us</a>
       </div>
-    </nav>
+    </header>
   );
 }
 
 function Hero() {
   return (
-    <section className="hero" id="home">
-      <div className="hero-grid">
-        <motion.div 
-          className="hero-content"
+    <section className="hero">
+      <div className="hero-3d-bg">
+        <Canvas camera={{ position: [0, 2, 10], fov: 50 }}>
+          <ambientLight intensity={1} />
+          <CorporateParticleWave />
+        </Canvas>
+      </div>
+      <div className="container hero-content">
+        <motion.h1 
+          className="hero-headline"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          Architecting global ecosystems for a connected tomorrow.
+        </motion.h1>
+        <motion.p 
+          className="hero-subheadline"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1, delay: 0.2 }}
         >
-          <div className="badge">
-            HMSOFT Enterprise Infrastructure <ArrowRight size={14} />
-          </div>
-          <h1 className="hero-title">
-            Build and scale your<br />
-            <span>digital infrastructure.</span>
-          </h1>
-          <p className="hero-description">
-            HMSOFT provides the enterprise-grade platform, APIs, and data solutions you need to operate at global scale with maximum reliability and security.
-          </p>
-          <div className="hero-buttons">
-            <button className="btn-primary lg">Start Building <ChevronRight size={18} /></button>
-            <button className="btn-secondary lg">Talk to an Expert</button>
-          </div>
-        </motion.div>
-        
+          As a premier global enterprise, HMSOFT delivers comprehensive structural, digital, and strategic capabilities to the world's most complex organizations.
+        </motion.p>
         <motion.div 
-          className="hero-3d-container"
+          className="hero-actions"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, delay: 0.3 }}
+          transition={{ duration: 1, delay: 0.4 }}
         >
-          <Canvas camera={{ position: [0, 0, 4.5] }}>
-            <ambientLight intensity={1} />
-            <TechGlobe />
-          </Canvas>
+          <a href="#businesses" className="btn-primary">Explore Our Capabilities</a>
+          <a href="#about" className="btn-secondary">Discover Our Story</a>
         </motion.div>
       </div>
     </section>
   );
 }
 
-function Services() {
-  const services = [
-    {
-      icon: <Cloud size={24} strokeWidth={1.5} />,
-      title: "Cloud Architecture",
-      desc: "Deploy applications globally with our highly available edge network and dynamic scaling capabilities."
-    },
-    {
-      icon: <Shield size={24} strokeWidth={1.5} />,
-      title: "Enterprise Security",
-      desc: "Bank-grade encryption, automated compliance, and real-time threat detection built into every layer."
-    },
-    {
-      icon: <Database size={24} strokeWidth={1.5} />,
-      title: "Data Intelligence",
-      desc: "Process millions of events per second with our real-time analytics and data warehousing solutions."
-    },
-    {
-      icon: <Cpu size={24} strokeWidth={1.5} />,
-      title: "AI Integration",
-      desc: "Embed advanced machine learning models directly into your workflows via our specialized APIs."
-    }
-  ];
-
+function TrustSignals() {
   return (
-    <section className="services" id="solutions">
-      <div className="section-header">
-        <h2>A complete platform for modern teams</h2>
-        <p>Everything you need to build, deploy, and manage complex applications at scale, without the operational overhead.</p>
-      </div>
-      
-      <div className="services-grid">
-        {services.map((service, index) => (
-          <motion.div 
-            key={index}
-            className="service-card"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-          >
-            <div className="service-icon">{service.icon}</div>
-            <h3>{service.title}</h3>
-            <p>{service.desc}</p>
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Stats() {
-  return (
-    <section className="stats" id="company">
-      <div className="stats-grid">
-        <div className="stat-item">
-          <h3>99.99%</h3>
-          <p>Guaranteed Uptime</p>
-        </div>
-        <div className="stat-item">
-          <h3>500+</h3>
-          <p>Enterprise Clients</p>
-        </div>
-        <div className="stat-item">
-          <h3>50ms</h3>
-          <p>Global Latency</p>
-        </div>
-        <div className="stat-item">
-          <h3>$0</h3>
-          <p>Hidden Fees</p>
+    <section className="partners">
+      <div className="container">
+        <div className="partners-text">Trusted by industry leaders worldwide</div>
+        <div className="partners-logo-track">
+          <span>SAMSUNG</span>
+          <span>HYUNDAI</span>
+          <span>LG ELECTRONICS</span>
+          <span>SK TELECOM</span>
+          <span>POSCO</span>
         </div>
       </div>
     </section>
   );
 }
 
-function Footer() {
+function AboutNarrative() {
+  return (
+    <section className="section-padding about" id="about">
+      <div className="container about-grid">
+        <div className="about-image-placeholder">
+          <Globe2 size={120} opacity={0.5} />
+        </div>
+        <div className="about-content">
+          <h2>Our Heritage & Vision</h2>
+          <h3>Rooted in integrity. Driven by human-centric innovation.</h3>
+          <p>
+            For over two decades, HMSOFT has stood as a pillar of reliability in the global market. We believe that true corporate value is created not just through technological advancement, but through deep, enduring partnerships and a steadfast commitment to societal progress.
+          </p>
+          <p>
+            Our multidisciplinary teams across 40 nations work cohesively to solve intricate challenges—from supply chain logistics to next-generation infrastructure—ensuring sustainable growth for our clients and communities.
+          </p>
+          <a href="#about" className="btn-secondary" style={{ marginTop: '1rem' }}>Read Our Full Story <ArrowRight size={16} /></a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BentoBusinessAreas() {
+  return (
+    <section className="section-padding bento-section" id="businesses">
+      <div className="container">
+        <div className="section-header">
+          <h2 className="section-title">Core Capabilities</h2>
+          <p className="section-desc">A synergistic portfolio designed to manage complexity and drive enterprise-scale transformation.</p>
+        </div>
+        
+        <div className="bento-grid">
+          {/* Large Hero Card */}
+          <div className="bento-card bento-large dark">
+            <div className="bento-icon"><Building2 size={32} /></div>
+            <div>
+              <h3>Enterprise Infrastructure & Construction</h3>
+              <p>We build the physical and digital backbones of modern cities. From hyper-scale data centers to smart logistics hubs, our engineering division delivers projects with uncompromising safety and precision.</p>
+            </div>
+          </div>
+
+          {/* Side Cards */}
+          <div className="bento-card bento-side">
+            <div className="bento-icon"><Globe2 size={28} /></div>
+            <div>
+              <h3>Global Supply Chain</h3>
+              <p>End-to-end logistics and procurement networks spanning five continents.</p>
+            </div>
+          </div>
+
+          <div className="bento-card bento-side">
+            <div className="bento-icon"><BarChart3 size={28} /></div>
+            <div>
+              <h3>Strategic Consulting</h3>
+              <p>C-suite advisory for corporate restructuring and digital transformation.</p>
+            </div>
+          </div>
+
+          {/* Bottom Thirds */}
+          <div className="bento-card bento-third">
+            <div className="bento-icon"><ShieldCheck size={28} /></div>
+            <div>
+              <h3>Security & Compliance</h3>
+              <p>Rigorous regulatory adherence frameworks.</p>
+            </div>
+          </div>
+          
+          <div className="bento-card bento-third">
+            <div className="bento-icon"><Users2 size={28} /></div>
+            <div>
+              <h3>Human Capital Solutions</h3>
+              <p>Enterprise workforce management and training.</p>
+            </div>
+          </div>
+
+          <div className="bento-card bento-third">
+            <div className="bento-icon"><MessageSquare size={28} /></div>
+            <div>
+              <h3>ESG Initiatives</h3>
+              <p>Commitment to carbon neutrality and ethical governance.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Chatbot() {
+  return (
+    <div className="chatbot-widget" title="HMSOFT Assistant">
+      <MessageSquare size={28} />
+    </div>
+  );
+}
+
+function CorporateFooter() {
   return (
     <footer className="footer">
-      <div className="footer-container">
-        <div>
-          <div className="footer-logo">HMSOFT</div>
-          <p>© 2026 HMSOFT Enterprise Inc. All rights reserved.</p>
+      <div className="container">
+        <div className="footer-grid">
+          <div className="footer-col" style={{ gridColumn: 'span 2' }}>
+            <div className="logo" style={{ color: 'white', marginBottom: '1.5rem' }}>HMSOFT GROUP</div>
+            <p style={{ maxWidth: '300px' }}>Global Headquarters<br/>123 Enterprise Blvd, Executive Tower<br/>Seoul, Republic of Korea 06123</p>
+            <p style={{ marginTop: '1rem' }}>Tel: +82-2-1234-5678<br/>Email: contact@hmsoft.com</p>
+          </div>
+          <div className="footer-col">
+            <h4>About</h4>
+            <ul>
+              <li><a href="#">Corporate Profile</a></li>
+              <li><a href="#">Leadership Team</a></li>
+              <li><a href="#">Global Network</a></li>
+              <li><a href="#">Investor Relations</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Capabilities</h4>
+            <ul>
+              <li><a href="#">Infrastructure</a></li>
+              <li><a href="#">Supply Chain</a></li>
+              <li><a href="#">Consulting</a></li>
+              <li><a href="#">ESG</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Press Center</a></li>
+              <li><a href="#">Ethics Hotline</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Contact Us</a></li>
+            </ul>
+          </div>
         </div>
-        <div className="footer-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Security</a>
-          <a href="#">System Status</a>
+        
+        <div className="footer-bottom">
+          <p>© 2026 HMSOFT Enterprise Group. All rights reserved.</p>
+          <div className="legal-links">
+            <a href="#" style={{ color: 'white', textDecoration: 'none' }}>Privacy Policy</a>
+            <a href="#" style={{ color: 'white', textDecoration: 'none' }}>Terms of Use</a>
+            <a href="#" style={{ color: 'white', textDecoration: 'none' }}>Cookie Policy</a>
+          </div>
         </div>
+        
+        <p className="disclaimer">
+          HMSOFT Group and its subsidiaries operate independently and are separate legal entities. The information provided on this website is for general informational purposes only and does not constitute professional advice. Forward-looking statements are subject to risks and uncertainties.
+        </p>
       </div>
     </footer>
   );
@@ -203,13 +283,15 @@ function Footer() {
 function App() {
   return (
     <>
-      <Navbar />
+      <Header />
       <main>
         <Hero />
-        <Services />
-        <Stats />
+        <TrustSignals />
+        <AboutNarrative />
+        <BentoBusinessAreas />
       </main>
-      <Footer />
+      <CorporateFooter />
+      <Chatbot />
     </>
   );
 }
